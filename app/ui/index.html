@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>URC 控制台</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <span id="status-dot" class="dot off"></span>
+    <span id="device-name">正在连接…</span>
+    <span id="device-meta" class="muted"></span>
+    <span class="spacer"></span>
+    <select id="scene-select" style="max-width:150px"><option value="">— 场景 —</option></select>
+    <button id="btn-scene-save">存场景</button>
+    <button id="btn-scene-load">载入</button>
+    <button id="btn-scene-init">恢复初始</button>
+    <button id="btn-refresh">刷新状态</button>
+    <button id="btn-reconnect">重新连接</button>
+  </header>
+
+  <div id="tabbar">
+    <button class="tab active" data-tab="mix">调音台</button>
+    <button class="tab" data-tab="fx">效果器</button>
+    <button class="tab" data-tab="route">路由 / 系统</button>
+  </div>
+
+  <main id="main">
+    <div id="content" class="content">
+      <div class="page" id="page-mix"></div>
+      <div class="page hidden" id="page-fx"></div>
+      <div class="page hidden" id="page-route"></div>
+    </div>
+    <div id="meter-rail"></div>
+  </main>
+
+  <details id="raw-log-wrap">
+    <summary>原始报文 / 事件日志</summary>
+    <pre id="raw-log"></pre>
+  </details>
+
+  <script src="app.js"></script>
+</body>
+</html>

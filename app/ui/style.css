@@ -1,0 +1,495 @@
+:root {
+  --bg: #14161b;
+  --panel: #1c1f27;
+  --panel2: #22262f;
+  --border: #2e3340;
+  --text: #d8dbe2;
+  --muted: #8b91a0;
+  --accent: #f0aa28;
+  --accent2: #4cc38a;
+  --danger: #e5534b;
+
+  /* ── 排版统一令牌 ── */
+  --ctl-row-h: 15px;   /* .ctl 标签行/数值行固定高 */
+  --ctl-gap: 3px;      /* .ctl 三行间距 */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* dark theme scrollbars (WebKit/WebView2) */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #171a20; }
+::-webkit-scrollbar-thumb {
+  background: #39404f;
+  border-radius: 6px;
+  border: 2px solid #171a20;
+}
+::-webkit-scrollbar-thumb:hover { background: #4c5568; }
+::-webkit-scrollbar-thumb:active { background: #5a6478; }
+::-webkit-scrollbar-corner { background: #171a20; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  font-size: 13px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  overflow: hidden;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  flex: 0 0 auto;
+}
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.dot.on { background: var(--accent2); box-shadow: 0 0 6px var(--accent2); }
+.dot.off { background: var(--danger); }
+.muted { color: var(--muted); }
+.spacer { flex: 1; }
+
+button {
+  background: var(--panel2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: 12px;
+}
+header button, header select { height: 28px; }
+button:hover { border-color: var(--accent); }
+
+#tabbar {
+  display: flex;
+  gap: 6px;
+  padding: 8px 14px 0;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  flex: 0 0 auto;
+}
+.tab {
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom: none;
+  color: var(--muted);
+  padding: 7px 18px;
+  border-radius: 6px 6px 0 0;
+  font-size: 13px;
+}
+.tab.active {
+  color: var(--accent);
+  background: var(--bg);
+  border-color: var(--border);
+}
+
+main {
+  flex: 1 1 auto;
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  overflow: hidden;
+}
+
+.content {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.page { display: flex; gap: 10px; align-items: stretch; flex-wrap: wrap; }
+.page.hidden { display: none; }
+
+.strip {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 150px;
+  flex: 0 0 auto;
+}
+.strip h3 {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-align: center;
+  letter-spacing: 1px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.fx-panel { min-width: 320px; max-width: 560px; }
+.fx-sub { border-top: 1px dashed var(--border); padding-top: 6px; }
+.fx-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px 12px;
+  align-items: start;
+}
+.fx-grid > .toggle { width: 100%; margin-top: calc(var(--ctl-row-h) + var(--ctl-gap)); }   /* 开关撑满列宽,并下沉到滑条/下拉的控制带(跳过标签行) */
+.ctl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* 标签/控件/数值全部水平居中,vslider 不再靠左 */
+  gap: var(--ctl-gap);
+  min-width: 110px;      /* 保留下限(fader 行由 S3 钉宽) */
+}
+.ctl-label {
+  font-size: 11px; color: var(--muted);
+  height: var(--ctl-row-h); line-height: var(--ctl-row-h);
+  white-space: nowrap; text-align: center;
+}
+.ctl-value {
+  font-size: 11px; color: var(--text); font-variant-numeric: tabular-nums;
+  height: var(--ctl-row-h); line-height: var(--ctl-row-h);
+  white-space: nowrap; text-align: center;
+}
+.ctl.dead { opacity: 0.35; }
+.ctl select { width: 100%; }   /* 抵消 align-items:center 让 select 收缩成文本宽 */
+
+.toggles { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; }
+.toggle {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  min-width: 44px;
+  text-align: center;
+}
+.toggle.active { color: var(--accent); border-color: var(--accent); background: rgba(240, 170, 40, 0.12); }
+.toggle.active.danger { color: var(--danger); border-color: var(--danger); background: rgba(229, 83, 75, 0.12); }
+.toggle.dead { opacity: 0.35; cursor: default; }
+
+.section { border-top: 1px dashed var(--border); padding-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+.section .sec-label { font-size: 11px; color: var(--muted); text-align: center; }
+.sec-label { font-size: 11px; color: var(--muted); }
+#page-mix .sec-label { max-width: 170px; text-align: center; margin: 0 auto; }
+
+.fader-row { display: flex; gap: 8px; align-items: flex-end; justify-content: center; }
+.fader-row > .ctl { width: 110px; flex: 0 0 auto; }   /* 推子列钉宽,防塌缩/防浮动 */
+.strip-meter.ghost { visibility: hidden; }            /* 占位槽:同盒模型,不参与数据 */
+.axis-spacer { width: 10px; flex: 0 0 auto; visibility: hidden; }   /* 声像/平衡行的细占位槽:保轴心,不撑行高 */
+
+/* per-strip DAW-style meter (beside the fader) */
+.strip-meter {
+  position: relative;
+  width: 10px;
+  height: 130px;
+  background: #0c0e12;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  flex: 0 0 auto;
+  align-self: center;
+}
+.sm-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 0%;
+  background: linear-gradient(to top, #2a9d5c 0%, #58b368 55%, #9fce58 75%, #e5c531 90%, #e5534b 98%);
+  transition: height 90ms linear;
+}
+.sm-peak {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: #f4f6ff;
+  opacity: 0.85;
+  bottom: 0%;
+  transition: bottom 150ms ease-out;
+}
+.sm-peak.hold { background: var(--accent); opacity: 1; }
+
+/* ═══ 垂直推子(.vslider,仅调音台页)——SSL 9000J / Behringer X32 大型调音台电动推子段风格 ═══
+   渲染模型(Chromium vertical-lr):轨道伪元素占满整个 input,thumb 沿竖直方向按值滑动。
+   thumb 做成与轨道同宽(30px),水平方向天然贴合,规避了竖直模式下 thumb 交叉轴
+   对齐的不确定性,不需要水平滑条那种 margin-top 居中 hack。 */
+input[type="range"].vslider {
+  --fill: 0.5;        /* 推子位置(0~1 无单位),由 JS syncFill() 按 (v-min)/(max-min) 写入 */
+  --slot: #0b0d12;    /* 滑槽最深底色,与旁边电平表的 #0c0e12 同族 */
+  --rail: #3d4454;    /* 滑槽两侧金属导轨高光 */
+  --vs-mid: #191d26;  /* 导轨与深槽之间的暗过渡带 */
+  --vs-tick: rgba(139, 145, 160, 0.35);   /* 槽底刻度线(米灰,同 --muted 色相) */
+  writing-mode: vertical-lr;
+  direction: rtl;             /* 向上 = 大值(保留原机制) */
+  appearance: none;
+  -webkit-appearance: none;   /* 完全接管原生绘制,accent-color 随之失效 */
+  width: 30px;
+  height: 130px;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* 悬停:导轨/过渡带/刻度提亮一档——只覆写局部变量,避免 filter:brightness
+   把琥珀位置填充一起提亮导致 hover 时位置指示变色;排除禁用态,
+   已 dead(设备无此参数)的推子保持灰暗语义 */
+input[type="range"].vslider:hover:not(:disabled) {
+  --rail: #4d5568;
+  --vs-mid: #232936;
+  --vs-tick: rgba(178, 186, 204, 0.5);
+}
+
+/* ── 内凹滑槽:两侧金属导轨 + 槽底刻度线 + 纵向暗角 + cap 以下琥珀位置填充 ── */
+input[type="range"].vslider::-webkit-slider-runnable-track {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--border);     /* 与电平表同一圈边框语言,保证浑然一体 */
+  border-radius: 4px;
+  background-image:
+    /* 第4层(最上):槽内琥珀填充——电动推子的电机位置指示,顶端精确终止于
+       推子帽中线(13px=半帽高,102px=128−26 行程,128=130 高−上下各 1px 边框),
+       使"槽内填充→帽体握线"连成一条连续的位置读数线 */
+    linear-gradient(to top,
+      rgba(240, 170, 40, 0.38) 0 calc(13px + 102px * var(--fill)),
+      rgba(240, 170, 40, 0) calc(13px + 102px * var(--fill))),
+    /* 第3层:槽底刻度线,台子标尺语言:刻度比槽宽,两端各探出深槽 2px
+       (14px 层宽 vs 10px 深槽),每 12.8px 一道,128px 绘制区恰好 10 格 */
+    repeating-linear-gradient(to top,
+      var(--vs-tick) 0 1px,
+      transparent 1px 12.8px),
+    /* 第2层:深槽上下端暗角,模拟真实台子滑槽两端的结构阴影 */
+    linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.5) 0, transparent 8%, transparent 92%, rgba(0, 0, 0, 0.5) 100%),
+    /* 第1层(最底):内凹滑槽断面——左右 2px 金属导轨,居中 10px 深槽,
+       与旁边 10px 宽的 .strip-meter 电平表上下同轴、左右同宽 */
+    linear-gradient(90deg,
+      var(--rail) 0 2px,
+      var(--vs-mid) 2px calc(50% - 5px),
+      var(--slot) calc(50% - 5px) calc(50% + 5px),
+      var(--vs-mid) calc(50% + 5px) calc(100% - 2px),
+      var(--rail) calc(100% - 2px) 100%);
+  /* 与四层一一对应:填充 10px 居中(只染深槽,不罩金属导轨),刻度 14px 居中,
+     暗角 6px 居中(深槽内芯),滑槽断面满宽 */
+  background-size: 10px 100%, 14px 100%, 6px 100%, 100% 100%;
+  background-position: center 0, center 0, center 0, 0 0;
+  background-repeat: no-repeat;
+  /* 内阴影让滑槽真正"凹"进去(上暗下微亮,与电平表同向受光) */
+  box-shadow:
+    inset 0 1px 3px rgba(0, 0, 0, 0.75),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* ── 推子帽:SSL 灰色厚金属帽 + 中央防滑握线(琥珀),30×26 热区 ≥24px 好抓 ── */
+input[type="range"].vslider::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 30px;                /* 与轨道同宽:竖直模式下水平方向自动贴合 */
+  height: 26px;
+  border: 1px solid #10131a;
+  border-radius: 3px;
+  cursor: grab;
+  transition: filter 120ms ease;
+  background-image:
+    /* 第2层(最上):中央防滑握线——SSL 帽体中央一条细握线,用主题琥珀
+       嵌在帽体中部的压暗带里,既像硬件又锁死主题 */
+    linear-gradient(to bottom,
+      transparent 0 calc(50% - 1px),
+      var(--accent) calc(50% - 1px),
+      var(--accent) calc(50% + 1px),
+      transparent calc(50% + 1px)),
+    /* 第1层:帽体金属倒角——上下高光、中部握线区压暗(拉丝金属感) */
+    linear-gradient(to bottom,
+      #535b6d 0, #3d4453 16%, #2b313d 38%,
+      #1f242e 50%, #2b313d 62%, #3d4453 84%, #535b6d 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.45),
+    0 1px 3px rgba(0, 0, 0, 0.6);      /* 帽体浮出滑槽的投影 */
+}
+input[type="range"].vslider:hover::-webkit-slider-thumb {
+  filter: brightness(1.12);
+}
+/* 按住拖动:琥珀描边 + 外发光 + drop-shadow,呼应主题强调色
+   (.toggle.active 的 rgba(240,170,40,...) 同族语法) */
+input[type="range"].vslider:active::-webkit-slider-thumb {
+  cursor: grabbing;
+  filter: brightness(1.06) drop-shadow(0 0 6px rgba(240, 170, 40, 0.45));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.45),
+    0 1px 2px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(240, 170, 40, 0.55),
+    0 0 10px rgba(240, 170, 40, 0.35);
+}
+
+/* 键盘可达性:压掉 input 自身默认轮廓,但把可见焦点环画在推子帽上
+   (指示在真正被操作的交互件上,不是 outline:none 了事) */
+input[type="range"].vslider:focus-visible {
+  outline: none;
+}
+input[type="range"].vslider:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* 禁用:整体变暗由现有全局 input[type="range"]:disabled { opacity: 0.3 } 承担,
+   这里只补光标语义并把琥珀握线去色;.ctl.dead 的 opacity:0.35 语义不受影响 */
+input[type="range"].vslider:disabled {
+  cursor: default;
+}
+input[type="range"].vslider:disabled::-webkit-slider-thumb {
+  cursor: default;
+  filter: grayscale(0.5);
+}
+input[type="range"].hslider { width: 100%; min-width: 0; accent-color: var(--accent); }
+input[type="range"]:disabled { opacity: 0.3; }
+select {
+  background: var(--panel2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 11px;
+  padding: 3px 6px;
+}
+select:disabled { opacity: 0.3; }
+.ms-buttons { display: flex; gap: 5px; justify-content: center; }
+
+#meter-rail { flex: 0 0 auto; display: flex; flex-direction: column; min-height: 0; }
+#meter-rail .strip { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+.meter-grid { display: grid; grid-template-columns: repeat(10, auto); gap: 4px 6px; justify-content: center; }
+.meter { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.meter .bar-wrap {
+  width: 16px; height: 70px;
+  background: #0c0e12;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+.meter .bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 0%;
+  background: linear-gradient(to top, #2a9d5c, #7fce58 70%, #e5c531 90%, #e5534b);
+}
+.meter .peak {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: #fff;
+  opacity: 0.8;
+  bottom: 0%;
+}
+.meter .m-label { font-size: 10px; color: var(--muted); }
+
+#raw-log-wrap {
+  flex: 0 0 auto;
+  max-height: 130px;
+  overflow: auto;
+  background: var(--panel);
+  border-top: 1px solid var(--border);
+  padding: 6px 14px;
+}
+#raw-log-wrap summary { color: var(--muted); cursor: pointer; font-size: 12px; }
+#raw-log { font-size: 11px; color: var(--muted); font-family: Consolas, monospace; padding-top: 6px; white-space: pre-wrap; }
+
+.toast {
+  position: fixed;
+  bottom: 18px; right: 18px;
+  background: var(--panel2);
+  border: 1px solid var(--danger);
+  color: var(--text);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+  z-index: 10;
+}
+.toast.show { opacity: 1; }
+
+/* circular parameter tips */
+.ctl-label { display: flex; align-items: center; gap: 4px; }
+.tip {
+  position: relative;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 12px;
+  text-align: center;
+  cursor: help;
+  flex: 0 0 auto;
+  user-select: none;
+}
+.tip:hover { color: var(--accent); border-color: var(--accent); background: rgba(240, 170, 40, 0.1); }
+.tip:hover::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: 0;
+  top: 20px;
+  z-index: 30;
+  background: #262b35;
+  border: 1px solid var(--accent);
+  color: var(--text);
+  padding: 7px 9px;
+  border-radius: 5px;
+  width: max-content;
+  max-width: 280px;
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+}
+#rec-test select { width: 100%; }
+
+/* FX editor popup: official 3-column layout */
+.ed-cols { display: flex; gap: 12px; align-items: flex-start; padding: 4px; }
+.ed-col { flex: 1 1 0; min-width: 260px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.ed-col-title { font-size: 13px; font-weight: 600; color: var(--accent); text-align: center; letter-spacing: 2px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.ed-sec { border-top: 1px dashed var(--border); padding-top: 6px; display: flex; flex-direction: column; gap: 6px; }
+.ed-col .ctl { min-width: 0; }
+.ed-col .hslider { width: 100%; }
+.morph-slider { margin: 0 auto; }
+
+/* ═══ FX 编辑器弹窗(bootEditor 分区版式 v1)——图在上参数在下、仪表贴边、开关即灯 ═══ */
+.ed-root { flex: 1 1 100%; min-width: 0; display: flex; flex-direction: column; gap: 10px; padding: 8px; height: 100%; overflow: auto; }
+.ed-header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ed-title { font-size: 14px; font-weight: 600; letter-spacing: 2px; color: var(--accent); white-space: nowrap; }
+.ed-model { font-size: 12px; color: var(--text); background: var(--panel2); border: 1px solid var(--border); border-radius: 4px; padding: 2px 10px; letter-spacing: 1px; }
+.ed-header .ctl { min-width: 0; }
+.ed-meters { display: flex; gap: 10px; margin-left: auto; }
+.ed-meter { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.ed-meter .pair { display: flex; gap: 3px; }
+.ed-meter .strip-meter { width: 12px; height: 180px; }
+.ed-meter .cap { font-size: 10px; color: var(--muted); }
+.ed-meter-row { display: flex; justify-content: center; }
+/* GR 表:条从顶端向下增长 = 增益削减量;峰值保持线跟随 */
+.ed-gr .sm-bar { top: 0; bottom: auto; background: linear-gradient(to bottom, #e5534b, rgba(229, 83, 75, 0.25)); }
+.ed-gr .sm-peak { bottom: auto; background: var(--accent); transition: top 150ms ease-out; }
+.ed-canvas-box { background: #0c0e12; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.ed-canvas-box canvas { display: block; cursor: crosshair; touch-action: none; }
+.ed-env-box { min-height: 240px; display: flex; align-items: center; justify-content: center; flex: 1 1 auto; }
+.ed-p2-note { font-size: 11px; color: var(--muted); text-align: center; line-height: 1.7; padding: 10px; }
+.ed-dim { opacity: 0.35; }
+.ed-off { opacity: 0.35; pointer-events: none; }
+.ed-grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 14px; align-items: start; }
+.ed-grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; align-items: start; }
+.ed-grid4 > .toggle { width: 100%; margin-top: calc(var(--ctl-row-h) + var(--ctl-gap)); }   /* 开关下沉到滑条控制带 */
+.ed-p2 { border: 1px dashed var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--muted); min-height: 56px; }
+.ed-note-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+.ed-note-grid .toggle { min-width: 0; width: 100%; }
+.ed-note-grid .toggle.black { background: #10131a; border-color: #000; }
+.ed-note-grid .toggle.black.active { color: var(--accent); border-color: var(--accent); background: rgba(240, 170, 40, 0.12); }
+.ed-hint { font-size: 11px; color: var(--muted); }
+.ed-empty { margin: auto; text-align: center; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 28px 24px; max-width: 380px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.ed-empty-title { font-size: 14px; font-weight: 600; color: var(--text); }

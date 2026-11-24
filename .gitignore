@@ -1,0 +1,37 @@
+# Rust / Cargo build artifacts
+target/
+**/target/
+
+# Tauri generated schemas
+app/gen/schemas/
+
+# Logs & temp files
+*.log
+app/_*.png
+app/*_view.jpg
+app/_*.jpg
+app/final_check.png
+
+# Python cache
+__pycache__/
+*.pyc
+
+# UI verification harness (local scratch, browser profiles, screenshots, logs)
+_verify_ui/
+
+# Downloaded web/PDF reference cache
+extracts/web_tmp/
+
+# Manual page capture & temp verification harness
+.tmp_manual/
+.tmp_scripts/
+
+# OCR crop images
+extracts/ocr_crops/
+
+# OS junk
+Thumbs.db
+desktop.ini
+
+# Local-only research workspace (never pushed)
+_temp/

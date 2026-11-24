@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "URC Console default capability",
+  "windows": ["main", "fx-*"],
+  "permissions": ["core:default", "core:window:allow-set-size"]
+}
